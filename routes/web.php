@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tenant/all', AllTenants::class)->name('tetants.all');
     Route::get('/household/all', AllHouseholds::class)->name('households.all');
     Route::get('/unverified/all', Unverified::class)->name('unverified.all');
-    Route::get('/profile/{id}', Profile::class)->name('profile');
+    Route::get('/profile/{id}', Profile::class)->name('profileView');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/properties', Properties::class)->name('properties');
     Route::get('/property/{id}', ViewProperty::class)->name('property');

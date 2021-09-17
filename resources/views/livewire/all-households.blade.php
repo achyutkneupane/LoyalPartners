@@ -22,7 +22,7 @@
                                     {{ $loop->iteration }}
                                 </th>
                                 <td>
-                                    <a href='{{ route('profile',$household->id) }}'>
+                                    <a href='{{ route('profileView',$household->id) }}'>
                                         {{ $household->name }}
                                     </a>
                                 </td>

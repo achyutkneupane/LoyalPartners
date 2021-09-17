@@ -23,32 +23,65 @@
                                 Household Member:
                             </dt>
                             <dd class='col-lg-9 text-right'>
+                                @if(($property->household && $property->household->id == auth()->id()) || auth()->user()->type == 'director' || ($property->tenant && $property->tenant->id == auth()->id()))
+                                {!! $property->household ? "<a href='".route('profileView',$property->household->id)."'>".$property->household->name."</a>" : 'N/A' !!}
+                                @else
                                 {{ $property->household ? $property->household->name : 'N/A' }}
+                                @endif
                             </dd>
                             <dt class='col-lg-3'>
                                 Tenant:
                             </dt>
                             <dd class='col-lg-9 text-right'>
+                                @if(($property->household && $property->household->id == auth()->id()) || auth()->user()->type == 'director' || ($property->tenant && $property->tenant->id == auth()->id()))
+                                {!! $property->tenant ? "<a href='".route('profileView',$property->tenant->id)."'>".$property->tenant->name."</a>" : 'N/A' !!}
+                                @else
                                 {{ $property->tenant ? $property->tenant->name : 'N/A' }}
+                                @endif
+                                @if($property->tenant)({!! $property->tenant_status ? '<span class="text-success">Verified</span>' : '<span class="text-danger">Not Verified</span>' !!})@endif
                             </dd>
-                            <dt class='col-lg-3'>
-                                Residential Tenancy Agreement:
+                            <dt class='col-lg-5'>
+                                Residential Tenancy Agreement(Household):
                             </dt>
-                            <dd class='col-lg-9 text-right'>
-                                @if($property->hasMedia('rta'))
-                                <a href='{{ $property->rta->getUrl() }}' target='_blank'>
-                                    {{ $property->rta->name }}
+                            <dd class='col-lg-7 text-right'>
+                                @if($property->hasMedia('hrta'))
+                                <a href='{{ $property->hrta->getUrl() }}' target='_blank'>
+                                    {{ $property->hrta->name }}
                                     <br>
-                                    ({{ $property->rta->human_readable_size }})
+                                    ({{ $property->hrta->human_readable_size }})
                                 </a>
-                                @elseif($rta)
-                                <button class='btn btn-success' wire:click='uploadRta'>Upload</button>
+                                @elseif($hrta)
+                                <button class='btn btn-success' wire:click='uploadHrta'>Upload</button>
+                                @else
+                                    @if($property->household == auth()->user())
+                                    <div wire:loading wire:target="hrta">Processing...</div>
+                                    <div wire:loading.remove wire:target="hrta" class="custom-file">
+                                        <label class="custom-file-label text-left" for="customFile">Choose file</label>
+                                        <input type="file" class="custom-file-input" id="customFile" wire:model='hrta'>
+                                    </div>
+                                    @else
+                                    <div class='text-muted'>N/A</div>
+                                    @endif
+                                @endif
+                            </dd>
+                            <dt class='col-lg-5'>
+                                Residential Tenancy Agreement(Tenant):
+                            </dt>
+                            <dd class='col-lg-7 text-right'>
+                                @if($property->hasMedia('trta'))
+                                <a href='{{ $property->trta->getUrl() }}' target='_blank'>
+                                    {{ $property->trta->name }}
+                                    <br>
+                                    ({{ $property->trta->human_readable_size }})
+                                </a>
+                                @elseif($trta)
+                                <button class='btn btn-success' wire:click='uploadTrta'>Upload</button>
                                 @else
                                 @role('tenant')
-                                <div wire:loading wire:target="rta">Processing...</div>
-                                <div wire:loading.remove class="custom-file">
+                                <div wire:loading wire:target="trta">Processing...</div>
+                                <div wire:loading.remove wire:target="trta" class="custom-file">
                                     <label class="custom-file-label text-left" for="customFile">Choose file</label>
-                                    <input type="file" class="custom-file-input" id="customFile" wire:model='rta'>
+                                    <input type="file" class="custom-file-input" id="customFile" wire:model='trta'>
                                 </div>
                                 @else
                                 <div class='text-muted'>N/A</div>

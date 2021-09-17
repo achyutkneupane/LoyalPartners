@@ -17,13 +17,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($unverifieds as $unverified)
+                            @forelse($unverifieds as $unverified)
                             <tr>
                                 <th scope="row">
                                     {{ $loop->iteration }}
                                 </th>
                                 <td>
-                                    <a href='{{ route('profile',$unverified->id) }}'>
+                                    <a href='{{ route('profileView',$unverified->id) }}'>
                                         {{ $unverified->name }}
                                     </a>
                                 </td>
@@ -86,7 +86,13 @@
                                   </div>
                                 </div>
                             </div>
-                            @endforeach
+                            @empty
+                            <tr>
+                              <td colspan='5' class='text-center'>
+                                No Unverified Users
+                              </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                   </p>

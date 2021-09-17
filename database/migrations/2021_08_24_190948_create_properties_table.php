@@ -19,6 +19,7 @@ class CreatePropertiesTable extends Migration
             $table->text('description');
             $table->unsignedBigInteger('household_id')->nullable();
             $table->unsignedBigInteger('tenant_id')->nullable();
+            $table->boolean('tenant_status')->default(false);
             $table->timestamps();
             $table->foreign('household_id')->references('id')->on('users');
             $table->foreign('tenant_id')->references('id')->on('users');

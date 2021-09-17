@@ -13,7 +13,8 @@ class Property extends Model implements HasMedia
     use HasFactory;
     protected $guarded = [];
     protected $extends = [
-        'rta',
+        'hrta',
+        'trta',
         'la',
         'bp'
     ];
@@ -25,9 +26,13 @@ class Property extends Model implements HasMedia
     {
         return $this->belongsTo(User::class,'household_id','id');
     }
-    public function getRtaAttribute()
+    public function getTrtaAttribute()
     {
-        return $this->getMedia('rta')->last();
+        return $this->getMedia('trta')->last();
+    }
+    public function getHrtaAttribute()
+    {
+        return $this->getMedia('hrta')->last();
     }
     public function getLaAttribute()
     {

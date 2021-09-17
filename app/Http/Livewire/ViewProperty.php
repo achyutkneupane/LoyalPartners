@@ -5,30 +5,49 @@ namespace App\Http\Livewire;
 use App\Models\Property;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ViewProperty extends Component
 {
     use WithFileUploads;
-    public $pid,$property,$rta,$la,$pb;
+    public $pid,$property,$trta,$hrta,$la,$pb;
     public function mount($id)
     {
         $this->pid = $id;
-        $this->property = Property::find($this->pid);
     }
-    public function uploadRta()
+    public function uploadTrta()
     {
         $this->validate([
-            'rta' => 'required'
+            'trta' => 'required'
         ]);
-        $extension = $this->rta->extension();
-        $path = 'property'.$this->property->id.'rta'.now()->timestamp.'.'.$extension;
-        $this->property->addMedia($this->rta->getRealPath())
-                    ->usingFileName($path)
-                    ->usingName($path)
-                    ->toMediaCollection('rta');
+        $this->property->tenant()->associate(auth()->id());
+        $this->property->save();
+        $extension = $this->trta->extension();
+        $path = 'property'.$this->property->id.'trta'.now()->timestamp.'.'.$extension;
+        $this->property->addMedia($this->trta->getRealPath())
+                        ->withCustomProperties(['uploader' => auth()->id()])
+                        ->usingFileName($path)
+                        ->usingName($path)
+                        ->toMediaCollection('trta');
+
+    }
+    public function uploadHrta()
+    {
+        $this->validate([
+            'hrta' => 'required'
+        ]);
+        $extension = $this->hrta->extension();
+        $path = 'property'.$this->property->id.'hrta'.now()->timestamp.'.'.$extension;
+        $this->property->addMedia($this->hrta->getRealPath())
+                        ->withCustomProperties(['uploader' => auth()->id()])
+                        ->usingFileName($path)
+                        ->usingName($path)
+                        ->toMediaCollection('hrta');
+
     }
     public function render()
     {
+        $this->property = Property::find($this->pid);
         return view('livewire.view-property');
     }
 }

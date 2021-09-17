@@ -54,11 +54,69 @@
         <div class='col-lg-8'>
             <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">Section Title</h5>
-                  <p class="card-text">
-                      This is a section where household details will be shown.
-                  </p>
-                  {{-- <a href="#" class="btn btn-primary">Button</a> --}}
+                @if(auth()->user()->type == 'director' || $user == auth()->user())
+                    <h5 class="card-title">Uploaded Documents</h5>
+                    <p class="card-text">
+                        <table class="table table-hover">
+                            <thead class='thead-dark'>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Property</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($medias as $media)
+                                <tr>
+                                    <th scope="row">
+                                        {{ $loop->iteration }}
+                                    </th>
+                                    <td>
+                                        <a href='{{ $media->getUrl() }}' target='_blank'>
+                                            {{ $media->name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @if($media->collection_name == 'trta')
+                                        Residential Tenancy Agreement
+                                        @elseif($media->collection_name == 'hrta')
+                                        Residential Tenancy Agreement
+                                        @elseif($media_collection_name == 'la')
+                                        Lease Aggrement
+                                        @elseif($media->collection_name == 'bp')
+                                        Business Policy
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $media->human_readable_size }}
+                                    </td>
+                                    <td>
+                                        <a href='{{ route('property',$media->model->id) }}'>
+                                            {{ $media->model->title }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                <td colspan='5' class='text-center'>
+                                    No Documents
+                                </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </p>
+                    @endif
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Section Title</h5>
+                    <p class="card-text">
+                        Other Sections
+                    </p>
                 </div>
             </div>
         </div>
