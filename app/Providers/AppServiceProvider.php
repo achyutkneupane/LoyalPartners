@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Property;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +13,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Cashier::ignoreMigrations();
     }
 
     /**
@@ -25,7 +22,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Cashier::useCustomerModel(User::class);
-        Cashier::useSubscriptionModel(Property::class);
     }
 }

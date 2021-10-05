@@ -6,7 +6,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -16,7 +15,6 @@ class User extends Authenticatable implements MustVerifyEmail,HasMedia
 {
     use InteractsWithMedia;
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
-    use Billable;
 
     /**
      * The attributes that are mass assignable.
