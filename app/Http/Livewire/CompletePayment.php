@@ -32,7 +32,7 @@ class CompletePayment extends Component
     }
     public function render()
     {
-        $this->pname = $this->property->tenant->name;
+        $this->pname = $this->property->household->name;
         $this->amount = $this->property->price;
         $this->paymentDone = !!$this->property->paid_at;
         return view('livewire.complete-payment');

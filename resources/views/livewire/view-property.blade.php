@@ -26,7 +26,7 @@
                                 AUD <b>{{ $property->price }}</b> @if($property->paid_at)<span class='text-bold text-success'>(Paid)</span>
                                 @else
                                 <span class='text-bold text-danger'>(Unpaid)</span>
-                                    @if($property->tenant_status && $property->tenant->id == auth()->id())
+                                    @if($property->tenant_status && $property->household->id == auth()->id())
                                         <button type="button" class="btn btn-info btn-sm" onclick="payForProperty()">Pay</button>
                                     @endif
                                 @endif
@@ -231,7 +231,7 @@
             $("[data-dismiss=modal]").trigger({ type: "click" });
         })
     </script>
-    @if($property->tenant_status && $property->tenant->id == auth()->id())
+    @if($property->tenant_status && $property->household->id == auth()->id())
     <script>
         function payForProperty() {
             windowWidth = 500;
