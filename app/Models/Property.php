@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Cashier\Billable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -12,7 +11,6 @@ class Property extends Model implements HasMedia
 {
     use InteractsWithMedia;
     use HasFactory;
-    use Billable;
     protected $guarded = [];
     protected $extends = [
         'hrta',
