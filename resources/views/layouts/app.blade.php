@@ -58,7 +58,7 @@
         @auth
         @livewire('components.header')
         @livewire('components.sidebar')
-        <div class='content-wrapper'>
+        <div class='content-wrapper' style="background-image: url('https://wallpaperaccess.com/full/16676.jpg')">
             <div class='p-4'>
                 {{ $slot }}
             </div>
