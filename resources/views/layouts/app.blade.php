@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     @livewireStyles
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" style="background-image: url('https://wallpaperaccess.com/full/16676.jpg');">
     <div class="wrapper" data-turbolinks="false" id="app">
         @guest
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
