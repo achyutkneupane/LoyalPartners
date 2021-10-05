@@ -24,7 +24,7 @@ class AllDocuments extends Component
         $extension = $this->document->extension();
         $path = Str::slug($this->title,'_').'_'.now()->timestamp.'.'.$extension;
         User::find(1)->addMedia($this->document->getRealPath())
-                        ->withCustomProperties(['docTitle' => $this->title])
+                        ->withCustomProperties(['docTitle' => $this->title,'uploader' => auth()->id()])
                         ->usingFileName($path)
                         ->usingName($path)
                         ->toMediaCollection('documents');
@@ -40,6 +40,7 @@ class AllDocuments extends Component
         $path = 'business_policy_'.now()->timestamp.'.'.$extension;
         User::find(1)->addMedia($this->newBP->getRealPath())
                         ->usingFileName($path)
+                        ->withCustomProperties(['uploader' => auth()->id()])
                         ->usingName($path)
                         ->toMediaCollection('bp');
         $this->reset('newBP');
@@ -56,6 +57,7 @@ class AllDocuments extends Component
         User::find(1)->addMedia($this->newBP->getRealPath())
                         ->usingFileName($path)
                         ->usingName($path)
+                        ->withCustomProperties(['uploader' => auth()->id()])
                         ->toMediaCollection('bp');
         $this->reset('newBP');
         $this->dispatchBrowserEvent('closeModal');
@@ -97,7 +99,7 @@ class AllDocuments extends Component
         $extension = $this->document->extension();
         $path = Str::slug($this->title,'_').'_'.now()->timestamp.'.'.$extension;
         $media = User::find(1)->addMedia($this->document->getRealPath())
-                        ->withCustomProperties(['docTitle' => $this->title])
+                        ->withCustomProperties(['docTitle' => $this->title,'uploader' => auth()->id()])
                         ->usingFileName($path)
                         ->usingName($path)
                         ->toMediaCollection('documents');
