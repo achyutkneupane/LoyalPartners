@@ -33,8 +33,8 @@
                                     {{ $property->tenant ? $property->tenant->name : 'N/A' }}
                                 </td>
                                 <td class='text-center'>
-                                    <a href='{{ $property->hla->getUrl() }}'>By Household Member</a><br>
-                                    <a href='{{ $property->tla->getUrl() }}'>By Tenant</a>
+                                    <a href='{{ $property->hrta->getUrl() }}'>By Household Member</a><br>
+                                    <a href='{{ $property->trta->getUrl() }}'>By Tenant</a>
                                 </td>
                                 <td class='text-center'>
                                     <button class='btn btn-success' data-toggle="modal" data-target="#propertyVerify{{ $property->id }}">Verify</button>
