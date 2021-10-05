@@ -8,21 +8,35 @@ trait WithPagination
 {
     public $page = 1;
 
-    public function getQueryString()
-    {
-        $queryString = method_exists($this, 'queryString')
-            ? $this->queryString()
-            : $this->queryString;
+    public $paginators = [];
 
-        return array_merge(['page' => ['except' => 1]], $queryString);
+    protected $numberOfPaginatorsRendered = [];
+
+    public function queryStringWithPagination()
+    {
+        foreach ($this->paginators as $key => $value) {
+            $this->$key = $value;
+        }
+
+        return array_fill_keys(array_keys($this->paginators), ['except' => 1]);
     }
 
     public function initializeWithPagination()
     {
+        foreach ($this->paginators as $key => $value) {
+            $this->$key = $value;
+        }
+
         $this->page = $this->resolvePage();
 
-        Paginator::currentPageResolver(function () {
-            return (int) $this->page;
+        $this->paginators['page'] = $this->page;
+
+        Paginator::currentPageResolver(function ($pageName) {
+            if (! isset($this->paginators[$pageName])) {
+                $this->paginators[$pageName] = request()->query($pageName, 1);
+            }
+
+            return (int) $this->paginators[$pageName];
         });
 
         Paginator::defaultView($this->paginationView());
@@ -39,29 +53,53 @@ trait WithPagination
         return 'livewire::simple-' . (property_exists($this, 'paginationTheme') ? $this->paginationTheme : 'tailwind');
     }
 
-    public function previousPage()
+    public function previousPage($pageName = 'page')
     {
-        $this->setPage(max($this->page - 1, 1));
+        $this->setPage(max($this->paginators[$pageName] - 1, 1), $pageName);
     }
 
-    public function nextPage()
+    public function nextPage($pageName = 'page')
     {
-        $this->setPage($this->page + 1);
+        $this->setPage($this->paginators[$pageName] + 1, $pageName);
     }
 
-    public function gotoPage($page)
+    public function gotoPage($page, $pageName = 'page')
     {
-        $this->setPage($page);
+        $this->setPage($page, $pageName);
     }
 
-    public function resetPage()
+    public function resetPage($pageName = 'page')
     {
-        $this->setPage(1);
+        $this->setPage(1, $pageName);
     }
 
-    public function setPage($page)
+    public function setPage($page, $pageName = 'page')
     {
-        $this->page = $page;
+        $beforePaginatorMethod = 'updatingPaginators';
+        $afterPaginatorMethod = 'updatedPaginators';
+
+        $beforeMethod = 'updating' . $pageName;
+        $afterMethod = 'updated' . $pageName;
+
+        if (method_exists($this, $beforePaginatorMethod)) {
+            $this->{$beforePaginatorMethod}($page, $pageName);
+        }
+
+        if (method_exists($this, $beforeMethod)) {
+            $this->{$beforeMethod}($page, null);
+        }
+
+        $this->paginators[$pageName] =  $page;
+
+        $this->{$pageName} = $page;
+
+        if (method_exists($this, $afterPaginatorMethod)) {
+            $this->{$afterPaginatorMethod}($page, $pageName);
+        }
+
+        if (method_exists($this, $afterMethod)) {
+            $this->{$afterMethod}($page, null);
+        }
     }
 
     public function resolvePage()

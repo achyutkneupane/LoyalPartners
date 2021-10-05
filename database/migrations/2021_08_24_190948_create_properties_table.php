@@ -20,6 +20,9 @@ class CreatePropertiesTable extends Migration
             $table->unsignedBigInteger('household_id')->nullable();
             $table->unsignedBigInteger('tenant_id')->nullable();
             $table->boolean('tenant_status')->default(false);
+            $table->enum('purpose',array('lease','residence'))->default('residence');
+            $table->string('price');
+            $table->dateTime('paid_at')->default(NULL)->nullable();
             $table->timestamps();
             $table->foreign('household_id')->references('id')->on('users');
             $table->foreign('tenant_id')->references('id')->on('users');

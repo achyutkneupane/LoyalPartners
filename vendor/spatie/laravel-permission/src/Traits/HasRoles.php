@@ -52,7 +52,7 @@ trait HasRoles
      * Scope the model query to certain roles only.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     * @param string|int|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
      * @param string $guard
      *
      * @return \Illuminate\Database\Eloquent\Builder
@@ -86,7 +86,7 @@ trait HasRoles
     /**
      * Assign the given role to the model.
      *
-     * @param array|string|\Spatie\Permission\Contracts\Role ...$roles
+     * @param array|string|int|\Spatie\Permission\Contracts\Role ...$roles
      *
      * @return $this
      */
@@ -120,6 +120,9 @@ trait HasRoles
 
             $class::saved(
                 function ($object) use ($roles, $model) {
+                    if ($model->getKey() != $object->getKey()) {
+                        return;
+                    }
                     $model->roles()->sync($roles, false);
                     $model->load('roles');
                 }
@@ -134,7 +137,7 @@ trait HasRoles
     /**
      * Revoke the given role from the model.
      *
-     * @param string|\Spatie\Permission\Contracts\Role $role
+     * @param string|int|\Spatie\Permission\Contracts\Role $role
      */
     public function removeRole($role)
     {
@@ -150,7 +153,7 @@ trait HasRoles
     /**
      * Remove all current roles and set the given ones.
      *
-     * @param  array|\Spatie\Permission\Contracts\Role|string  ...$roles
+     * @param  array|\Spatie\Permission\Contracts\Role|string|int  ...$roles
      *
      * @return $this
      */

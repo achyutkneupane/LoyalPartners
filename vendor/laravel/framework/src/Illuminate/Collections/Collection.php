@@ -827,7 +827,7 @@ class Collection implements ArrayAccess, Enumerable
     /**
      * Push one or more items onto the end of the collection.
      *
-     * @param  mixed  $values [optional]
+     * @param  mixed  $values
      * @return $this
      */
     public function push(...$values)
@@ -1146,13 +1146,15 @@ class Collection implements ArrayAccess, Enumerable
             ? $this->operatorForWhere(...func_get_args())
             : $key;
 
-        $items = $this->when($filter)->filter($filter);
+        $placeholder = new stdClass();
 
-        if ($items->isEmpty()) {
+        $item = $this->first($filter, $placeholder);
+
+        if ($item === $placeholder) {
             throw new ItemNotFoundException;
         }
 
-        return $items->first();
+        return $item;
     }
 
     /**

@@ -21,13 +21,32 @@
                     </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('properties') }}" class="nav-link {{ request()->routeIs('properties') ? "active" : '' }}">
-                    <i class="nav-icon fas fa-home"></i>
-                    <p>
-                        Properties
-                    </p>
+                <li class="nav-item @role('director'){{ request()->routeIs('properties') || request()->routeIs('properties.pending') ? "menu-open" : 'menu-close' }}@endrole">
+                    <a href="{{ route('properties') }}" class="nav-link {{ request()->routeIs('properties') || request()->routeIs('properties.pending') ? "active" : '' }}">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>
+                            Properties
+                            @role('director')
+                            <i class="right fas fa-angle-left"></i>
+                            @endrole
+                        </p>
                     </a>
+                    @role('director')
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('properties') }}" class="nav-link {{ request()->routeIs('properties') ? "active" : '' }}">
+                                <i class="fas fa-list-ol nav-icon"></i>
+                                <p>All</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('properties.pending') }}" class="nav-link {{ request()->routeIs('properties.pending') ? "active" : '' }}">
+                                <i class="fas fa-hourglass-start nav-icon"></i>
+                                <p>Pending</p>
+                            </a>
+                        </li>
+                    </ul>
+                    @endrole
                 </li>
                 @role('director')
                 <li class="nav-item {{ request()->routeIs('tetants.all') || request()->routeIs('households.all') || request()->routeIs('unverified.all') ? "menu-open" : 'menu-close' }}">
@@ -60,6 +79,22 @@
                     </ul>
                 </li>
                 @endrole
+                <li class="nav-item">
+                    <a href="{{ route('documents') }}" class="nav-link {{ request()->routeIs('documents') ? "active" : '' }}">
+                    <i class="nav-icon fas fa-file-alt"></i>
+                    <p>
+                        Documents
+                    </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('services') }}" class="nav-link {{ request()->routeIs('services') ? "active" : '' }}">
+                    <i class="nav-icon fas fa-question-circle"></i>
+                    <p>
+                        Services
+                    </p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();

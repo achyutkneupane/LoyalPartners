@@ -6,12 +6,17 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail,HasMedia
 {
+    use InteractsWithMedia;
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +24,10 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var string[]
      */
     protected $guarded = [];
+    protected $extends = [
+        'bp',
+        'documents'
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -38,6 +47,14 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function getBpAttribute()
+    {
+        return $this->getMedia('bp')->last();
+    }
+    public function getDocumentsAttribute()
+    {
+        return $this->getMedia('documents');
+    }
     public function tenance()
     {
         return $this->belongsTo(Property::class,'id','tenant_id');

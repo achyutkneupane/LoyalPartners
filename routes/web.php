@@ -1,13 +1,20 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
+use App\Http\Livewire\AllDocuments;
 use App\Http\Livewire\AllHouseholds;
+use App\Http\Livewire\AllServices;
 use App\Http\Livewire\AllTenants;
+use App\Http\Livewire\CompletePayment;
 use App\Http\Livewire\Documents;
 use App\Http\Livewire\Home;
+use App\Http\Livewire\PendingProperties;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\Properties;
 use App\Http\Livewire\Unverified;
+use App\Http\Livewire\ViewDocument;
 use App\Http\Livewire\ViewProperty;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -37,10 +44,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{id}', Profile::class)->name('profileView');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/properties', Properties::class)->name('properties');
+    Route::get('/properties/pending', PendingProperties::class)->name('properties.pending');
     Route::get('/property/{id}', ViewProperty::class)->name('property');
+    Route::get('/documents', AllDocuments::class)->name('documents');
+    Route::get('/services',AllServices::class)->name('services');
+    Route::get('/pay/property/{pid}',CompletePayment::class)->name('pay');
+});
+Route::get('/stripe', function() {
+    return "Stripe";
 });
 
-ROute::get('/test', function() {
+Route::get('/test', function() {
     $tab = "(G)Raat Dherai (D)Paryo Dherai (Cadd9)Dherai
             (G)Maayaaka Kura Nagara Na (Cadd9)Aye
             

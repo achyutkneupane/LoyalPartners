@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Cashier\Billable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -11,12 +12,13 @@ class Property extends Model implements HasMedia
 {
     use InteractsWithMedia;
     use HasFactory;
+    use Billable;
     protected $guarded = [];
     protected $extends = [
         'hrta',
         'trta',
-        'la',
-        'bp'
+        'tla',
+        'hla'
     ];
     public function tenant()
     {
@@ -34,12 +36,12 @@ class Property extends Model implements HasMedia
     {
         return $this->getMedia('hrta')->last();
     }
-    public function getLaAttribute()
+    public function getHlaAttribute()
     {
-        return $this->getMedia('la')->last();
+        return $this->getMedia('hla')->last();
     }
-    public function getBpAttribute()
+    public function getTlaAttribute()
     {
-        return $this->getMedia('bp')->last();
+        return $this->getMedia('tla')->last();
     }
 }

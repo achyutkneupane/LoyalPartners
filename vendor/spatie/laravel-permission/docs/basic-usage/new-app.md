@@ -35,8 +35,8 @@ git commit -m "Add Spatie Laravel Permissions package"
 php artisan migrate:fresh
 
 # Add `HasRoles` trait to User model
-sed -i '' $'s/use Notifiable;/use Notifiable;\\\n    use \\\\Spatie\\\\Permission\\\\Traits\\\\HasRoles;/' app/User.php
 sed -i '' $'s/use HasFactory, Notifiable;/use HasFactory, Notifiable;\\\n    use \\\\Spatie\\\\Permission\\\\Traits\\\\HasRoles;/' app/Models/User.php
+sed -i '' $'s/use HasApiTokens, HasFactory, Notifiable;/use HasApiTokens, HasFactory, Notifiable;\\\n    use \\\\Spatie\\\\Permission\\\\Traits\\\\HasRoles;/' app/Models/User.php
 git add . && git commit -m "Add HasRoles trait"
 
 # Add Laravel's basic auth scaffolding
@@ -156,7 +156,7 @@ To share your app on Github for easy collaboration:
 
 ```sh
 git remote add origin git@github.com:YOURUSERNAME/REPONAME.git
-git push -u origin master
+git push -u origin main
 ```
 The above only needs to be done once. 
 
@@ -165,7 +165,7 @@ The above only needs to be done once.
 ```sh
 git add .
 git commit -m "Explain what your commit is about here"
-git push origin master
+git push origin main
 ```
 Repeat the above process whenever you change code that you want to share.
 

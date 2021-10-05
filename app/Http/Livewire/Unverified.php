@@ -26,13 +26,14 @@ class Unverified extends Component
         $user->save();
         Mail::to($user->email)
             ->send(new UserAccepted());
+        $this->dispatchBrowserEvent('closeModal');
     }
     public function rejectUser($id)
     {
         $user = User::find($id);
         Mail::to($user->email)
             ->send(new UserRejected($this->reason));
-            $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('closeModal');
     }
     public function render()
     {

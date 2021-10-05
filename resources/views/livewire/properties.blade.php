@@ -13,6 +13,8 @@
                             <th scope="col">Title</th>
                             <th scope="col">Household Name</th>
                             <th scope="col">Tenant Name</th>
+                            <th scope="col">Purpose</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Documents</th>
                         </tr>
                         </thead>
@@ -28,19 +30,23 @@
                                     </a>
                                 </td>
                                 <td class='text-center'>{{ $property->household ? $property->household->name : 'N/A' }}</td>
-                                <td class='text-center'>{{ $property->tenant ? $property->tenant->name : 'N/A' }}</td>
+                                <td class='text-center'>
+                                    {{ $property->tenant ? $property->tenant->name : 'N/A' }}
+                                </td>
+                                <td>{{ $property->purpose == 'lease' ? 'Lease' : 'Residency' }}</td>
+                                <td>AUD <b>{{ $property->price }}</b></td>
                                 <td>{{ $property->media->count() }}</td>
                             </tr>
                             @empty
                             <tr>
-                                <th colspan="5" class='text-center'>
+                                <th colspan="7" class='text-center'>
                                     No Entries
                                 </th>
                             </tr>
                             @endforelse
                             @role('household_member|director')
                             <tr>
-                                <th colspan="5" class='text-center'>
+                                <th colspan="7" class='text-center'>
                                     <button class='btn btn-link text-dark font-weight-bold' data-toggle="modal" data-target="#addProperty">
                                         + Add
                                     </button>
@@ -50,9 +56,11 @@
                         </tbody>
                     </table>
                   </p>
-                  {{-- <div class="card-footer">
-                    {!! $households->links() !!}
-                  </div> --}}
+                  @if($properties->hasPages())
+                  <div class="card-footer">
+                    {!! $properties->links() !!}
+                  </div>
+                  @endif
                 </div>
             </div>
         </div>
@@ -71,6 +79,30 @@
                     <label for="title">Property Title</label>
                     <input type="text" class="form-control" id="title" placeholder="Property Title" wire:model.defer='title' required>
                     @error('title')
+                        <span class='text-danger'>{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="title">Purpose</label>
+                    
+                    <select wire:model='purpose' class='form-control @error('purpose') is-invalid @enderror' required>
+                        <option value='' disabled selected>Select an option</option>
+                        <option value='lease' @if($purpose == 'lease') selected @endif>Lease</option>
+                        <option value='residence' @if($purpose == 'residence') selected @endif>Tenant Residency</option>
+                    </select>
+                    @error('purpose')
+                        <span class='text-danger'>{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="title">Amount</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">AUD</div>
+                        </div>
+                        <input type="text" class="form-control" id="inlineFormInputGroupAmount" placeholder="Property Price" wire:model.defer='amount' required>
+                    </div>
+                    @error('amount')
                         <span class='text-danger'>{{ $message }}</span>
                     @enderror
                 </div>

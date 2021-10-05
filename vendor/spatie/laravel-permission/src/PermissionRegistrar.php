@@ -32,6 +32,9 @@ class PermissionRegistrar
     /** @var string */
     public static $cacheKey;
 
+    /** @var array */
+    private $cachedRoles = [];
+
     /**
      * PermissionRegistrar constructor.
      *
@@ -117,26 +120,36 @@ class PermissionRegistrar
      */
     private function loadPermissions()
     {
-        if ($this->permissions === null) {
-            $this->permissions = $this->cache->remember(self::$cacheKey, self::$cacheExpirationTime, function () {
-                $permissions = $this->getPermissionClass()->select('id', 'name', 'guard_name')
-                    ->with('roles:id,name,guard_name')
-                    ->get()->toArray();
-                foreach ($permissions as $i => $permission) {
-                    foreach ($permission['roles'] ?? [] as $j => $roles) {
-                        unset($permissions[$i]['roles'][$j]['pivot']);
-                    }
-                }
+        if ($this->permissions !== null) {
+            return;
+        }
 
-                return $permissions;
+        $this->permissions = $this->cache->remember(self::$cacheKey, self::$cacheExpirationTime, function () {
+            // make the cache smaller using an array with only required fields
+            return $this->getPermissionClass()->select('id', 'id as i', 'name as n', 'guard_name as g')
+                ->with('roles:id,id as i,name as n,guard_name as g')->get()
+                ->map(function ($permission) {
+                    return $permission->only('i', 'n', 'g') +
+                        ['r' => $permission->roles->map->only('i', 'n', 'g')->all()];
+                })->all();
+        });
+
+        if (is_array($this->permissions)) {
+            $this->permissions = $this->getPermissionClass()::hydrate(
+                collect($this->permissions)->map(function ($item) {
+                    return ['id' => $item['i'] ?? $item['id'], 'name' => $item['n'] ?? $item['name'], 'guard_name' => $item['g'] ?? $item['guard_name']];
+                })->all()
+            )
+            ->each(function ($permission, $i) {
+                $roles = Collection::make($this->permissions[$i]['r'] ?? $this->permissions[$i]['roles'] ?? [])
+                        ->map(function ($item) {
+                            return $this->getHydratedRole($item);
+                        });
+
+                $permission->setRelation('roles', $roles);
             });
-            if (is_array($this->permissions)) {
-                $permissions = new Collection();
-                foreach ($this->permissions as $value) {
-                    $permissions->push($this->permissionClass::getModelFromArray($value));
-                }
-                $this->permissions = $permissions;
-            }
+
+            $this->cachedRoles = [];
         }
     }
 
@@ -206,5 +219,23 @@ class PermissionRegistrar
     public function getCacheStore(): \Illuminate\Contracts\Cache\Store
     {
         return $this->cache->getStore();
+    }
+
+    private function getHydratedRole(array $item)
+    {
+        $roleId = $item['i'] ?? $item['id'];
+
+        if (isset($this->cachedRoles[$roleId])) {
+            return $this->cachedRoles[$roleId];
+        }
+
+        $roleClass = $this->getRoleClass();
+        $roleInstance = new $roleClass;
+
+        return $this->cachedRoles[$roleId] = $roleInstance->newFromBuilder([
+            'id' => $roleId,
+            'name' => $item['n'] ?? $item['name'],
+            'guard_name' => $item['g'] ?? $item['guard_name'],
+        ]);
     }
 }

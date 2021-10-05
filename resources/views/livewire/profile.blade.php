@@ -52,9 +52,9 @@
             </div>
         </div>
         <div class='col-lg-8'>
+            @if(auth()->user()->type == 'director' || $user == auth()->user())
             <div class="card">
                 <div class="card-body">
-                @if(auth()->user()->type == 'director' || $user == auth()->user())
                     <h5 class="card-title">Uploaded Documents</h5>
                     <p class="card-text">
                         <table class="table table-hover">
@@ -83,10 +83,10 @@
                                         Residential Tenancy Agreement
                                         @elseif($media->collection_name == 'hrta')
                                         Residential Tenancy Agreement
-                                        @elseif($media_collection_name == 'la')
+                                        @elseif($media->collection_name == 'hla')
                                         Lease Aggrement
-                                        @elseif($media->collection_name == 'bp')
-                                        Business Policy
+                                        @elseif($media->collection_name == 'tla')
+                                        Lease Aggrement
                                         @endif
                                     </td>
                                     <td>
@@ -108,9 +108,9 @@
                             </tbody>
                         </table>
                     </p>
-                    @endif
                 </div>
             </div>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Section Title</h5>

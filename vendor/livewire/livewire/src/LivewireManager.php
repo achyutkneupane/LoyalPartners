@@ -13,6 +13,8 @@ class LivewireManager
     protected $componentAliases = [];
     protected $queryParamsForTesting = [];
 
+    protected $shouldDisableBackButtonCache = false;
+
     protected $persistentMiddleware = [
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         \Laravel\Jetstream\Http\Middleware\AuthenticateSession::class,
@@ -191,6 +193,10 @@ class LivewireManager
         display: none;
     }
 
+    [wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short], [wire\:loading\.delay\.long], [wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest] {
+        display:none;
+    }
+
     [wire\:offline] {
         display: none;
     }
@@ -274,8 +280,8 @@ HTML;
         // because it will be minified in production.
         return <<<HTML
 {$assetWarning}
-<script src="{$fullAssetPath}" data-turbo-eval="false" data-turbolinks-eval="false"{$nonce}></script>
-<script data-turbo-eval="false" data-turbolinks-eval="false"{$nonce}>
+<script src="{$fullAssetPath}" data-turbo-eval="false" data-turbolinks-eval="false" {$nonce}></script>
+<script data-turbo-eval="false" data-turbolinks-eval="false" {$nonce}>
     {$windowLivewireCheck}
 
     window.livewire = new Livewire({$jsonEncodedOptions});
@@ -418,5 +424,28 @@ HTML;
         $this->queryParamsForTesting = $queryParams;
 
         return $this;
+    }
+
+    public function setBackButtonCache()
+    {
+        /**
+         * Reverse this boolean so that the middleware is only applied when it is disabled.
+         */
+        $this->shouldDisableBackButtonCache = ! config('livewire.back_button_cache', false);
+    }
+
+    public function disableBackButtonCache()
+    {
+        $this->shouldDisableBackButtonCache = true;
+    }
+
+    public function enableBackButtonCache()
+    {
+        $this->shouldDisableBackButtonCache = false;
+    }
+
+    public function shouldDisableBackButtonCache()
+    {
+        return $this->shouldDisableBackButtonCache;
     }
 }
